@@ -1,17 +1,20 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import { BadgeCheck, Home, MessageSquare, Search, User, FileSpreadsheet } from "lucide-react";
+import { BadgeCheck, Home, MessageSquare, Search, User, FileSpreadsheet, Award } from "lucide-react";
 import RoommateCard from "@/components/Roommate/RoommateCard";
 import { MOCK_ROOMMATES, MOCK_ROOMS } from "@/data/mockData";
 import RoomCard from "@/components/Roommate/RoomCard";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [isSearching, setIsSearching] = useState(false);
+  const [bestMatch, setBestMatch] = useState(null);
   
   if (!user) {
     navigate("/login");
@@ -23,6 +26,20 @@ const Dashboard = () => {
   
   // Get featured rooms
   const featuredRooms = MOCK_ROOMS.slice(0, 2);
+  
+  // Find best match function
+  const findBestMatch = () => {
+    setIsSearching(true);
+    
+    // Simulate searching process
+    setTimeout(() => {
+      // Find roommate with highest compatibility
+      const bestRoommate = [...MOCK_ROOMMATES].sort((a, b) => b.compatibility - a.compatibility)[0];
+      setBestMatch(bestRoommate);
+      setIsSearching(false);
+      toast.success("Found your best roommate match!");
+    }, 2000);
+  };
   
   return (
     <div className="py-8">
@@ -40,7 +57,7 @@ const Dashboard = () => {
           <div className="mb-8 rounded-lg overflow-hidden">
             <div className="relative">
               <img 
-                src="https://images.unsplash.com/photo-1500673922987-e212871fec22" 
+                src="https://images.unsplash.com/photo-1600607686527-6fb886090705" 
                 alt="Find your ideal roommate" 
                 className="w-full h-48 object-cover"
               />
@@ -104,6 +121,64 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+        
+        {/* Best Match Feature */}
+        {user.profileComplete && user.surveyComplete && !bestMatch && (
+          <div className="mb-8 p-6 bg-accent/5 border border-accent/20 rounded-lg">
+            <div className="flex flex-col md:flex-row items-center justify-between">
+              <div className="mb-4 md:mb-0">
+                <h2 className="text-xl font-semibold flex items-center">
+                  <Award className="mr-2 h-5 w-5 text-accent" />
+                  Find Your Best Roommate Match
+                </h2>
+                <p className="text-muted-foreground">
+                  Let our algorithm find your ideal roommate based on your preferences and habits
+                </p>
+              </div>
+              <Button 
+                onClick={findBestMatch} 
+                disabled={isSearching}
+                className="min-w-[150px]"
+              >
+                {isSearching ? (
+                  <>
+                    <div className="mr-2 h-4 w-4 border-2 border-background border-t-transparent rounded-full animate-spin"></div>
+                    Searching...
+                  </>
+                ) : (
+                  <>Find Best Match</>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+        
+        {/* Best Match Result */}
+        {bestMatch && (
+          <div className="mb-8">
+            <Card className="border-accent/30 bg-accent/5">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center">
+                      <Award className="mr-2 h-5 w-5 text-accent" />
+                      Your Best Match
+                    </CardTitle>
+                    <CardDescription>
+                      Based on your habits and preferences
+                    </CardDescription>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={() => setBestMatch(null)}>
+                    Find Again
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <RoommateCard roommate={bestMatch} featured={true} />
+              </CardContent>
+            </Card>
           </div>
         )}
         
