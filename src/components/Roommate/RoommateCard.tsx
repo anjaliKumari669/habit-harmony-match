@@ -47,8 +47,8 @@ const RoommateCard: React.FC<RoommateCardProps> = ({ roommate, showActions = tru
                 </div>
                 <Progress 
                   value={roommate.compatibility} 
-                  className="w-24 h-2" 
-                  indicatorClassName={getProgressColor(roommate.compatibility)}
+                  className="w-24 h-2"
+                  style={{ backgroundColor: getProgressColor(roommate.compatibility) }}
                 />
                 <span className="text-sm text-muted-foreground">match</span>
               </div>
