@@ -10,8 +10,12 @@ const MainLayout: React.FC = () => {
   
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse-soft text-2xl font-bold text-primary">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-muted/10">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-2xl font-bold text-primary">Loading...</div>
+          <p className="text-muted-foreground mt-2">Setting up your MatchMate experience</p>
+        </div>
       </div>
     );
   }

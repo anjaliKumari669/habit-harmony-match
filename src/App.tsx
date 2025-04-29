@@ -18,6 +18,8 @@ import PreferencesSurveyPage from "./pages/Survey/PreferencesSurveyPage";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import MatchesPage from "./pages/Matches/MatchesPage";
 import RoomsPage from "./pages/Rooms/RoomsPage";
+import AboutPage from "./pages/About/AboutPage";
+import HowItWorksPage from "./pages/HowItWorks/HowItWorksPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +38,8 @@ const App = () => (
               <Route path="/matches" element={<MatchesPage />} />
               <Route path="/rooms" element={<RoomsPage />} />
               <Route path="/preferences-survey" element={<PreferencesSurveyPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/how-it-works" element={<HowItWorksPage />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />

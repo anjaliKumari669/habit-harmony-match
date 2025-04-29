@@ -11,6 +11,7 @@ export interface User {
   profileComplete: boolean;
   surveyComplete: boolean;
   profileImage?: string;
+  habits?: string[];
 }
 
 // Define context type
@@ -35,7 +36,8 @@ const MOCK_USERS = [
     password: "password123",
     profileComplete: true,
     surveyComplete: true,
-    profileImage: "/placeholder.svg"
+    profileImage: "/placeholder.svg",
+    habits: ["Early riser", "Clean and tidy", "Non-smoker"]
   }
 ];
 
@@ -100,7 +102,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       name,
       email,
       profileComplete: false,
-      surveyComplete: false
+      surveyComplete: false,
+      profileImage: "/placeholder.svg",
+      habits: []
     };
     
     // Add to mock users (in real app, this would be an API call)
