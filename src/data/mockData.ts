@@ -1,4 +1,3 @@
-
 // Mock data for roommate profiles
 
 export interface RoommateProfile {
@@ -256,5 +255,45 @@ export const MOCK_ROOMS: RoomListing[] = [
       name: "Jordan Taylor",
       profileImage: "/placeholder.svg"
     }
+  }
+];
+
+export interface Room {
+  id: string;
+  title: string;
+  price: number;
+  location: string;
+  description: string;
+  amenities: string[];
+  image: string;
+}
+
+export const rooms: Room[] = [
+  {
+    id: "1",
+    title: "Modern Studio Apartment",
+    price: 1200,
+    location: "Downtown",
+    description: "Bright and modern studio apartment in the heart of downtown.",
+    amenities: ["WiFi", "Kitchen", "Washer/Dryer", "AC"],
+    image: "/placeholder.svg"
+  },
+  {
+    id: "2",
+    title: "Cozy 2-Bedroom Near Campus",
+    price: 1500,
+    location: "University District",
+    description: "Comfortable 2-bedroom apartment within walking distance to campus.",
+    amenities: ["Parking", "WiFi", "Kitchen", "Pet-friendly"],
+    image: "/placeholder.svg"
+  },
+  {
+    id: "3",
+    title: "Spacious Shared House",
+    price: 800,
+    location: "Greenwood",
+    description: "Private room in a spacious shared house with 3 other roommates.",
+    amenities: ["Garden", "WiFi", "Shared Kitchen", "Furnished"],
+    image: "/placeholder.svg"
   }
 ];

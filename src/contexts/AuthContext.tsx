@@ -1,14 +1,7 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { createClient } from '@supabase/supabase-js';
-
-// Supabase client setup
-const supabaseUrl = 'https://supabase-public-url.supabase.co';
-const supabaseAnonKey = 'your-anon-key';
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { supabase } from "@/integrations/supabase/client";
 
 // Define user type
 export interface User {
@@ -114,7 +107,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         password
       });
       
-      if (error) throw error;
+      if (error) throw new Error(error.message);
       
       if (data.user) {
         // Get user profile
@@ -125,7 +118,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           .single();
         
         if (profileError && profileError.code !== 'PGRST116') {
-          throw profileError;
+          throw new Error(profileError.message);
         }
         
         // Create profile if it doesn't exist
@@ -144,7 +137,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             .select()
             .single();
           
-          if (insertError) throw insertError;
+          if (insertError) throw new Error(insertError.message);
           userProfile = newProfile;
         }
         
@@ -163,23 +156,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem("matchmate_user", JSON.stringify(userData));
         toast.success("Login successful!");
         navigate("/dashboard");
+        return;
       }
     } catch (err) {
       console.error("Login error:", err);
-      
-      // Fallback to mock data for demo
+      throw err; // Re-throw the error to be caught in the Login component
+    }
+    
+    // Fallback to mock data for demo
+    try {
       const foundUser = MOCK_USERS.find(u => u.email === email && u.password === password);
       
       if (foundUser) {
         // Remove password from user object
-        const { password, ...secureUser } = foundUser;
+        const { password: _, ...secureUser } = foundUser;
         setUser(secureUser);
         localStorage.setItem("matchmate_user", JSON.stringify(secureUser));
         toast.success("Login successful!");
         navigate("/dashboard");
       } else {
-        toast.error("Invalid email or password");
+        throw new Error("Invalid email or password");
       }
+    } catch (err) {
+      console.error("Mock login error:", err);
+      throw err; // Re-throw the error to be caught in the Login component
     } finally {
       setLoading(false);
     }

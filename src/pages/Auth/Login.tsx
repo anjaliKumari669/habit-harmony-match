@@ -14,21 +14,33 @@ import {
   CardTitle 
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
     
     try {
       await login(email, password);
+      // If login succeeds, the AuthContext will redirect the user
     } catch (error) {
       console.error("Login error:", error);
+      let errorMessage = "An error occurred during login";
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -57,6 +69,12 @@ const Login = () => {
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
+              {error && (
+                <div className="p-3 rounded-md bg-destructive/15 text-destructive text-sm">
+                  {error}
+                </div>
+              )}
+            
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
