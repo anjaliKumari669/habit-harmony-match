@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -176,7 +175,7 @@ const Dashboard = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <RoommateCard roommate={bestMatch} featured={true} />
+                <RoommateCard roommate={bestMatch} />
               </CardContent>
             </Card>
           </div>

@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -42,13 +43,14 @@ const replaceImages = () => {
     "https://images.unsplash.com/photo-1501183638710-841dd1904471"
   ];
   
-  images.forEach((img, index) => {
-    if (img.closest('.roommate-card')) {
-      img.src = roommatePics[index % roommatePics.length];
-    } else if (img.closest('.room-card')) {
-      img.src = roomPics[index % roomPics.length];
-    } else if (img.parentElement?.classList.contains('aspect-square')) {
-      img.src = "https://images.unsplash.com/photo-1600607686527-6fb886090705";
+  images.forEach((img: Element, index: number) => {
+    const imgElement = img as HTMLImageElement;
+    if (imgElement.closest('.roommate-card')) {
+      imgElement.src = roommatePics[index % roommatePics.length];
+    } else if (imgElement.closest('.room-card')) {
+      imgElement.src = roomPics[index % roomPics.length];
+    } else if (imgElement.parentElement?.classList.contains('aspect-square')) {
+      imgElement.src = "https://images.unsplash.com/photo-1600607686527-6fb886090705";
     }
   });
 };
