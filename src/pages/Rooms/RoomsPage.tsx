@@ -283,13 +283,16 @@ const RoomsPage = () => {
         )}
 
         {/* Room Details Dialog */}
-        <Dialog open={!!viewRoomId} onOpenChange={(open) => {
-          if (!open) {
-            setViewRoomId(null);
-            // Clear the URL parameter
-            navigate("/rooms");
-          }
-        }}>
+        <Dialog 
+          open={!!viewRoomId} 
+          onOpenChange={(open) => {
+            if (!open) {
+              setViewRoomId(null);
+              // Clear the URL parameter
+              navigate("/rooms");
+            }
+          }}
+        >
           <DialogContent className="max-w-3xl">
             {viewedRoom ? (
               <>
@@ -369,8 +372,8 @@ const RoomsPage = () => {
                   <p>Room not found</p>
                 </div>
               )}
-            </DialogContent>
-          </Dialog>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
