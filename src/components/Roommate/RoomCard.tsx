@@ -21,21 +21,27 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
   };
   
   const handleViewDetails = () => {
-    // In a real app, this would navigate to a room detail page
-    // For now, we'll just show a toast notification
     toast.success(`Viewing details for ${room.title}`);
-    // We would typically navigate to a detail page
-    // navigate(`/room/${room.id}`);
-    
-    // Open a modal or navigate to a details page
     navigate(`/rooms?view=${room.id}`);
   };
+  
+  // Use provided placeholder images or default to our own
+  const defaultImages = [
+    "/lovable-uploads/d40fb71f-91e2-4f5a-91d0-d345503cec59.png",
+    "/lovable-uploads/e8fee0da-9972-4c21-8021-aa84bc1cbef3.png",
+    "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"
+  ];
+  
+  // If room doesn't have images, add our placeholder images
+  if (!room.images || room.images.length === 0) {
+    room.images = [defaultImages[Math.floor(Math.random() * defaultImages.length)]];
+  }
   
   return (
     <Card className="overflow-hidden hover:shadow-md transition-all">
       <div className="relative h-48 overflow-hidden">
         <img 
-          src={room.images && room.images.length > 0 ? room.images[0] : "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"} 
+          src={room.images[0]} 
           alt={room.title} 
           className="w-full h-full object-cover"
         />

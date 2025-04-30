@@ -5,7 +5,7 @@ import RoomCard from "@/components/Roommate/RoomCard";
 import { MOCK_ROOMS } from "@/data/mockData";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Search, SlidersHorizontal, X } from "lucide-react";
+import { Plus, Search, SlidersHorizontal, Users, MessageCircle } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -54,6 +54,7 @@ const RoomsPage = () => {
   const [rooms, setRooms] = useState(MOCK_ROOMS);
   const [filters, setFilters] = useState<RoomFilters>(defaultFilters);
   const [viewRoomId, setViewRoomId] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const navigate = useNavigate();
   const { user } = useAuth();
   const location = useLocation();
@@ -140,6 +141,11 @@ const RoomsPage = () => {
     // Clear the URL parameter
     navigate("/rooms");
   };
+
+  const handleFindRoommate = () => {
+    navigate("/matches");
+    toast.success("Navigating to potential roommates");
+  };
   
   const amenitiesList = [
     "Wi-Fi", 
@@ -165,13 +171,23 @@ const RoomsPage = () => {
               Find a place to stay that suits your needs
             </p>
           </div>
-          <Button 
-            className="mt-4 sm:mt-0" 
-            onClick={() => navigate("/post-room")}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Post a Room
-          </Button>
+          <div className="flex gap-2 mt-4 sm:mt-0">
+            <Button 
+              variant="outline"
+              className="flex items-center gap-2" 
+              onClick={handleFindRoommate}
+            >
+              <Users className="h-4 w-4" />
+              Find Roommate
+            </Button>
+            <Button 
+              className="flex items-center gap-2" 
+              onClick={() => navigate("/post-room")}
+            >
+              <Plus className="h-4 w-4" />
+              Post a Room
+            </Button>
+          </div>
         </div>
         
         <div className="mb-8 p-4 bg-card rounded-lg border flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
@@ -304,13 +320,36 @@ const RoomsPage = () => {
                 <div className="mt-4">
                   <div className="rounded-md overflow-hidden h-60">
                     <img 
-                      src={viewedRoom.images[0] || "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"} 
+                      src={viewedRoom.images && viewedRoom.images.length > 0 
+                        ? viewedRoom.images[selectedImageIndex] 
+                        : "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"} 
                       alt={viewedRoom.title}
                       className="w-full h-full object-cover" 
                     />
                   </div>
                   
-                  <div className="mt-4 grid grid-cols-2 gap-4">
+                  {/* Thumbnails */}
+                  {viewedRoom.images && viewedRoom.images.length > 1 && (
+                    <div className="flex gap-2 mt-2 overflow-x-auto pb-2">
+                      {viewedRoom.images.map((image, index) => (
+                        <div 
+                          key={index}
+                          className={`cursor-pointer w-16 h-16 rounded-md overflow-hidden border-2 ${
+                            selectedImageIndex === index ? 'border-primary' : 'border-transparent'
+                          }`}
+                          onClick={() => setSelectedImageIndex(index)}
+                        >
+                          <img 
+                            src={image} 
+                            alt={`Room view ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <h3 className="text-lg font-semibold mb-2">Details</h3>
                       <div className="space-y-2">
@@ -338,7 +377,7 @@ const RoomsPage = () => {
                       <div className="grid grid-cols-2 gap-2">
                         {viewedRoom.amenities.map((amenity, index) => (
                           <div key={index} className="flex items-center">
-                            <Checkbox checked={true} className="mr-2" />
+                            <Checkbox checked={true} disabled className="mr-2" />
                             <span>{amenity}</span>
                           </div>
                         ))}
@@ -351,7 +390,7 @@ const RoomsPage = () => {
                     <p>{viewedRoom.description}</p>
                   </div>
                   
-                  <div className="mt-6 pt-6 border-t flex justify-between items-center">
+                  <div className="mt-6 pt-6 border-t flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div className="flex items-center">
                       <img 
                         src={viewedRoom.postedBy.profileImage || "/lovable-uploads/3ec98b1c-a351-4d55-a626-42acb1dbb41c.png"} 
@@ -364,14 +403,23 @@ const RoomsPage = () => {
                       </div>
                     </div>
                     
-                    <Button onClick={handleContactHost}>Contact Host</Button>
+                    <div className="flex gap-2">
+                      <Button variant="outline" onClick={() => navigate(`/profile/${viewedRoom.postedBy.id}`)}>
+                        View Profile
+                      </Button>
+                      <Button onClick={handleContactHost} className="flex items-center gap-2">
+                        <MessageCircle className="h-4 w-4" />
+                        Contact Host
+                      </Button>
+                    </div>
                   </div>
-                </>
-              ) : (
-                <div className="text-center py-8">
-                  <p>Room not found</p>
                 </div>
-              )}
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <p>Room not found</p>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>
