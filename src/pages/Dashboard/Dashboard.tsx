@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { MOCK_ROOMMATES, MOCK_ROOMS, RoomListing } from "@/data/mockData";
+import { MOCK_ROOMMATES, MOCK_ROOMS } from "@/data/mockData";
 import { RoommateProfile } from "@/data/mockData";
+import { toast } from "sonner";
 
 // Dashboard Components
 import WelcomeHeader from "@/components/Dashboard/WelcomeHeader";
@@ -22,15 +23,28 @@ const Dashboard = () => {
   const [bestMatch, setBestMatch] = useState<RoommateProfile | null>(null);
   
   if (!user) {
+    toast.error("Please login to access the dashboard");
     navigate("/login");
     return null;
   }
   
   // Show top 3 matches
-  const topMatches = MOCK_ROOMMATES.slice(0, 3);
+  const topMatches = MOCK_ROOMMATES.slice(0, 3).map(roommate => ({
+    ...roommate,
+    profileImage: roommate.profileImage || "/lovable-uploads/3ec98b1c-a351-4d55-a626-42acb1dbb41c.png"
+  }));
   
-  // Get featured rooms
-  const featuredRooms = MOCK_ROOMS.slice(0, 2);
+  // Get featured rooms with fallback images
+  const featuredRooms = MOCK_ROOMS.slice(0, 2).map(room => ({
+    ...room,
+    images: room.images && room.images.length > 0 
+      ? room.images 
+      : ["/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"],
+    postedBy: {
+      ...room.postedBy,
+      profileImage: room.postedBy.profileImage || "/lovable-uploads/3ec98b1c-a351-4d55-a626-42acb1dbb41c.png"
+    }
+  }));
   
   return (
     <div className="py-8">

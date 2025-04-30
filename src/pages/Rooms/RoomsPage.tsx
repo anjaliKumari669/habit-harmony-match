@@ -1,11 +1,11 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import RoomCard from "@/components/Roommate/RoomCard";
 import { MOCK_ROOMS } from "@/data/mockData";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Search, SlidersHorizontal } from "lucide-react";
+import { Plus, Search, SlidersHorizontal, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,10 +21,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
 
 interface RoomFilters {
   minPrice: number;
@@ -45,8 +53,19 @@ const defaultFilters: RoomFilters = {
 const RoomsPage = () => {
   const [rooms, setRooms] = useState(MOCK_ROOMS);
   const [filters, setFilters] = useState<RoomFilters>(defaultFilters);
+  const [viewRoomId, setViewRoomId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if there's a room ID to view in the URL
+    const params = new URLSearchParams(location.search);
+    const viewId = params.get('view');
+    if (viewId) {
+      setViewRoomId(viewId);
+    }
+  }, [location]);
 
   if (!user) {
     navigate("/login");
@@ -106,11 +125,20 @@ const RoomsPage = () => {
     }
     
     setRooms(filtered);
+    toast.success("Filters applied");
   };
   
   const resetFilters = () => {
     setFilters(defaultFilters);
     setRooms(MOCK_ROOMS);
+    toast.success("Filters reset");
+  };
+
+  const handleContactHost = () => {
+    toast.success("Message sent to host!");
+    setViewRoomId(null);
+    // Clear the URL parameter
+    navigate("/rooms");
   };
   
   const amenitiesList = [
@@ -123,6 +151,9 @@ const RoomsPage = () => {
     "Security",
     "Pets Allowed"
   ];
+
+  // Find the room being viewed
+  const viewedRoom = MOCK_ROOMS.find(room => room.id === viewRoomId);
   
   return (
     <div className="py-8">
@@ -165,7 +196,6 @@ const RoomsPage = () => {
                 <SelectValue placeholder="Bedrooms" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any</SelectItem>
                 <SelectItem value="1">1 Bedroom</SelectItem>
                 <SelectItem value="2">2 Bedrooms</SelectItem>
                 <SelectItem value="3">3+ Bedrooms</SelectItem>
@@ -251,6 +281,96 @@ const RoomsPage = () => {
             <Button onClick={resetFilters}>Reset Filters</Button>
           </div>
         )}
+
+        {/* Room Details Dialog */}
+        <Dialog open={!!viewRoomId} onOpenChange={(open) => {
+          if (!open) {
+            setViewRoomId(null);
+            // Clear the URL parameter
+            navigate("/rooms");
+          }
+        }}>
+          <DialogContent className="max-w-3xl">
+            {viewedRoom ? (
+              <>
+                <DialogHeader>
+                  <DialogTitle>{viewedRoom.title}</DialogTitle>
+                  <DialogDescription>{viewedRoom.location}</DialogDescription>
+                </DialogHeader>
+                
+                <div className="mt-4">
+                  <div className="rounded-md overflow-hidden h-60">
+                    <img 
+                      src={viewedRoom.images[0] || "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"} 
+                      alt={viewedRoom.title}
+                      className="w-full h-full object-cover" 
+                    />
+                  </div>
+                  
+                  <div className="mt-4 grid grid-cols-2 gap-4">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Details</h3>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Price:</span>
+                          <span className="font-medium">${viewedRoom.price}/month</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Bedrooms:</span>
+                          <span>{viewedRoom.bedrooms}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Bathrooms:</span>
+                          <span>{viewedRoom.bathrooms}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Available from:</span>
+                          <span>{new Date(viewedRoom.availableFrom).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Amenities</h3>
+                      <div className="grid grid-cols-2 gap-2">
+                        {viewedRoom.amenities.map((amenity, index) => (
+                          <div key={index} className="flex items-center">
+                            <Checkbox checked={true} className="mr-2" />
+                            <span>{amenity}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6">
+                    <h3 className="text-lg font-semibold mb-2">Description</h3>
+                    <p>{viewedRoom.description}</p>
+                  </div>
+                  
+                  <div className="mt-6 pt-6 border-t flex justify-between items-center">
+                    <div className="flex items-center">
+                      <img 
+                        src={viewedRoom.postedBy.profileImage || "/lovable-uploads/3ec98b1c-a351-4d55-a626-42acb1dbb41c.png"} 
+                        alt={viewedRoom.postedBy.name}
+                        className="w-10 h-10 rounded-full mr-3" 
+                      />
+                      <div>
+                        <p className="font-medium">{viewedRoom.postedBy.name}</p>
+                        <p className="text-sm text-muted-foreground">Property Host</p>
+                      </div>
+                    </div>
+                    
+                    <Button onClick={handleContactHost}>Contact Host</Button>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <p>Room not found</p>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
       </div>
     </div>
   );

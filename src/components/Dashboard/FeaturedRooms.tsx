@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import RoomCard from "@/components/Roommate/RoomCard";
 import { useNavigate } from "react-router-dom";
 import { RoomListing } from "@/data/mockData";
+import { toast } from "sonner";
 
 interface FeaturedRoomsProps {
   rooms: RoomListing[];
@@ -14,6 +15,16 @@ interface FeaturedRoomsProps {
 const FeaturedRooms = ({ rooms }: FeaturedRoomsProps) => {
   const navigate = useNavigate();
   
+  const handleViewAll = () => {
+    navigate("/rooms");
+    toast.success("Navigating to all available rooms");
+  };
+  
+  const handlePostRoom = () => {
+    navigate("/post-room");
+    toast.success("Let's post your room listing");
+  };
+  
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -21,24 +32,28 @@ const FeaturedRooms = ({ rooms }: FeaturedRoomsProps) => {
           <CardTitle>Featured Rooms</CardTitle>
           <CardDescription>Available rooms that match your preferences</CardDescription>
         </div>
-        <Button variant="outline" size="sm" onClick={() => navigate("/rooms")}>
+        <Button variant="outline" size="sm" onClick={handleViewAll}>
           View All
         </Button>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {rooms.map((room) => (
+          {rooms && rooms.length > 0 ? rooms.map((room) => (
             <RoomCard key={room.id} room={room} />
-          ))}
-          
-          {rooms.length === 0 && (
+          )) : (
             <div className="text-center py-8 col-span-2">
-              <Home className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+              <div className="h-32 w-32 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/3ec98b1c-a351-4d55-a626-42acb1dbb41c.png" 
+                  alt="Featured room"
+                  className="h-24 w-24 object-cover rounded-full"
+                />
+              </div>
               <h3 className="text-lg font-medium mb-1">No rooms available</h3>
               <p className="text-muted-foreground mb-4">
                 Check back later or post your own room listing
               </p>
-              <Button onClick={() => navigate("/post-room")}>
+              <Button onClick={handlePostRoom}>
                 <Home className="mr-2 h-4 w-4" />
                 Post a Room
               </Button>

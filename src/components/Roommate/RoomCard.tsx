@@ -6,6 +6,7 @@ import { RoomListing } from "@/data/mockData";
 import { MapPin, DollarSign, Calendar, BedDouble, Wand2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
 
 interface RoomCardProps {
   room: RoomListing;
@@ -19,11 +20,22 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
   
+  const handleViewDetails = () => {
+    // In a real app, this would navigate to a room detail page
+    // For now, we'll just show a toast notification
+    toast.success(`Viewing details for ${room.title}`);
+    // We would typically navigate to a detail page
+    // navigate(`/room/${room.id}`);
+    
+    // Open a modal or navigate to a details page
+    navigate(`/rooms?view=${room.id}`);
+  };
+  
   return (
     <Card className="overflow-hidden hover:shadow-md transition-all">
       <div className="relative h-48 overflow-hidden">
         <img 
-          src={room.images[0]} 
+          src={room.images && room.images.length > 0 ? room.images[0] : "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"} 
           alt={room.title} 
           className="w-full h-full object-cover"
         />
@@ -74,7 +86,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
       <CardFooter className="p-4 pt-0 flex justify-between items-center">
         <div className="flex items-center">
           <Avatar className="h-6 w-6 mr-2">
-            <AvatarImage src={room.postedBy.profileImage} alt={room.postedBy.name} />
+            <AvatarImage src={room.postedBy.profileImage || "/lovable-uploads/3ec98b1c-a351-4d55-a626-42acb1dbb41c.png"} alt={room.postedBy.name} />
             <AvatarFallback>{room.postedBy.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <span className="text-sm">{room.postedBy.name}</span>
@@ -82,7 +94,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
         
         <Button 
           size="sm" 
-          onClick={() => navigate(`/room/${room.id}`)}
+          onClick={handleViewDetails}
           className="flex items-center gap-1"
         >
           <Wand2 className="h-4 w-4" />
