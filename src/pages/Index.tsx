@@ -48,7 +48,7 @@ const Index = () => {
             <div className="relative">
               <div className="aspect-square rounded-2xl overflow-hidden border-8 border-white shadow-xl relative z-10">
                 <img 
-                  src="/placeholder.svg" 
+                  src="https://images.unsplash.com/photo-1600607686527-6fb886090705" 
                   alt="Happy roommates" 
                   className="w-full h-full object-cover"
                 />

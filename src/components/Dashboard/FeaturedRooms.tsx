@@ -28,15 +28,7 @@ const FeaturedRooms = ({ rooms }: FeaturedRoomsProps) => {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {rooms.map((room) => (
-            <RoomCard key={room.id} room={{
-              id: room.id,
-              title: room.title,
-              price: room.price,
-              location: room.location,
-              description: room.description,
-              amenities: room.amenities,
-              image: room.images[0] || "/placeholder.svg"
-            }} />
+            <RoomCard key={room.id} room={room} />
           ))}
           
           {rooms.length === 0 && (

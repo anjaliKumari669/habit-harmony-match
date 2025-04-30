@@ -107,7 +107,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         password
       });
       
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error("Supabase login error:", error);
+        throw new Error(error.message);
+      }
       
       if (data.user) {
         // Get user profile
@@ -118,6 +121,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           .single();
         
         if (profileError && profileError.code !== 'PGRST116') {
+          console.error("Profile fetch error:", profileError);
           throw new Error(profileError.message);
         }
         
@@ -129,15 +133,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             .insert([{ 
               id: data.user.id, 
               name: data.user.email?.split('@')[0] || '', 
-              email: data.user.email,
+              email: data.user.email || '',
               profile_complete: false,
               survey_complete: false,
               habits: []
             }])
-            .select()
+            .select('*')
             .single();
           
-          if (insertError) throw new Error(insertError.message);
+          if (insertError) {
+            console.error("Profile creation error:", insertError);
+            throw new Error(insertError.message);
+          }
           userProfile = newProfile;
         }
         
@@ -154,17 +161,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         setUser(userData);
         localStorage.setItem("matchmate_user", JSON.stringify(userData));
-        toast.success("Login successful!");
-        navigate("/dashboard");
         return;
       }
     } catch (err) {
       console.error("Login error:", err);
-      throw err; // Re-throw the error to be caught in the Login component
-    }
-    
-    // Fallback to mock data for demo
-    try {
+      
+      // Try mock data for demo before giving up
       const foundUser = MOCK_USERS.find(u => u.email === email && u.password === password);
       
       if (foundUser) {
@@ -172,13 +174,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const { password: _, ...secureUser } = foundUser;
         setUser(secureUser);
         localStorage.setItem("matchmate_user", JSON.stringify(secureUser));
-        toast.success("Login successful!");
-        navigate("/dashboard");
-      } else {
-        throw new Error("Invalid email or password");
+        return;
       }
-    } catch (err) {
-      console.error("Mock login error:", err);
+      
       throw err; // Re-throw the error to be caught in the Login component
     } finally {
       setLoading(false);
