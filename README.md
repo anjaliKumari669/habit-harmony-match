@@ -4,15 +4,49 @@
 
 **URL**: https://lovable.dev/projects/04edb6ff-57b8-45b9-87b9-0259822f33f3
 
-## How can I edit this code?
+# 🧠 Compatibility Scorer
 
-There are several ways of editing your application.
+A rule-based app that scores how compatible two roommates are based on lifestyle preferences: sleep time, cleanliness, work schedule, and food habits.
 
-**Use Lovable**
+🔗 Live Demo: [Try the app](https://lovable.dev/projects/04edb6ff-57b8-45b9-87b9-0259822f33f3)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/04edb6ff-57b8-45b9-87b9-0259822f33f3) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Features
+
+- Input preferences and get a compatibility score (0–100)
+- Optional: Upload mock profiles via CSV and get ranked matches
+- Simple and clean React + Tailwind UI
+
+---
+
+## 🔍 How the Scoring Works
+
+Each category (sleep time, cleanliness, work schedule, food habits) is scored independently. A perfect match gives full points for that category.
+
+- Total score is out of 100
+- Weights can be adjusted in code
+
+---
+
+## 🧪 Example Input
+
+```json
+{
+  "user1": {
+    "sleep_time": "Early",
+    "cleanliness": "Tidy",
+    "work_schedule": "Day",
+    "food_habits": "Vegetarian"
+  },
+  "user2": {
+    "sleep_time": "Late",
+    "cleanliness": "Messy",
+    "work_schedule": "Night",
+    "food_habits": "Non-Vegetarian"
+  }
+}
+
 
 **Use your preferred IDE**
 
