@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Card, 
@@ -24,17 +24,22 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { signup } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     
     if (password !== confirmPassword) {
+      setError("Passwords don't match");
       toast.error("Passwords don't match");
       return;
     }
     
     if (!agreedToTerms) {
+      setError("You must agree to the terms and conditions");
       toast.error("You must agree to the terms and conditions");
       return;
     }
@@ -43,8 +48,18 @@ const Signup = () => {
     
     try {
       await signup(name, email, password);
+      toast.success("Account created successfully!");
+      navigate("/create-profile");
     } catch (error) {
       console.error("Signup error:", error);
+      let errorMessage = "An error occurred during signup";
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -73,6 +88,12 @@ const Signup = () => {
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
+              {error && (
+                <div className="p-3 rounded-md bg-destructive/15 text-destructive text-sm">
+                  {error}
+                </div>
+              )}
+              
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
                 <Input

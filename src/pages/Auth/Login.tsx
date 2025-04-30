@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Card, 
@@ -22,6 +22,7 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +32,8 @@ const Login = () => {
     try {
       await login(email, password);
       // If login succeeds, the AuthContext will redirect the user
+      toast.success("Login successful!");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
       let errorMessage = "An error occurred during login";

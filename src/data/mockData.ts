@@ -1,3 +1,4 @@
+
 // Mock data for roommate profiles
 
 export interface RoommateProfile {
@@ -202,6 +203,7 @@ export interface RoomListing {
     name: string;
     profileImage: string;
   };
+  image?: string; // Added to make compatible with Room interface
 }
 
 export const MOCK_ROOMS: RoomListing[] = [

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { MOCK_ROOMMATES, MOCK_ROOMS } from "@/data/mockData";
+import { MOCK_ROOMMATES, MOCK_ROOMS, RoomListing } from "@/data/mockData";
 import { RoommateProfile } from "@/data/mockData";
 
 // Dashboard Components

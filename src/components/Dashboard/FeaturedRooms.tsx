@@ -5,10 +5,10 @@ import { Home } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import RoomCard from "@/components/Roommate/RoomCard";
 import { useNavigate } from "react-router-dom";
-import { Room } from "@/data/mockData";
+import { RoomListing } from "@/data/mockData";
 
 interface FeaturedRoomsProps {
-  rooms: Room[];
+  rooms: RoomListing[];
 }
 
 const FeaturedRooms = ({ rooms }: FeaturedRoomsProps) => {
@@ -28,7 +28,15 @@ const FeaturedRooms = ({ rooms }: FeaturedRoomsProps) => {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {rooms.map((room) => (
-            <RoomCard key={room.id} room={room} />
+            <RoomCard key={room.id} room={{
+              id: room.id,
+              title: room.title,
+              price: room.price,
+              location: room.location,
+              description: room.description,
+              amenities: room.amenities,
+              image: room.images[0] || "/placeholder.svg"
+            }} />
           ))}
           
           {rooms.length === 0 && (
