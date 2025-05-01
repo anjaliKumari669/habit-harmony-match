@@ -30,7 +30,7 @@ The app uses a simple rule-based model to assign a compatibility score (0–100)
 
 ## 🚀 Live Demo
 
-👉 [View Live App](https://habit-harmony-match.lovable.app) 
+👉 [View Live App](habit-harmony-match.lovable.app) 
 *(Replace with your actual published Lovable URL)*
 
 ---
