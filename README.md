@@ -1,33 +1,59 @@
-# Welcome to your Lovable project
+# 🧠 Habit Harmony Match
 
-## Project info
-
-**URL**: https://lovable.dev/projects/04edb6ff-57b8-45b9-87b9-0259822f33f3
-
-# 🧠 Compatibility Scorer
-
-A rule-based app that scores how compatible two roommates are based on lifestyle preferences: sleep time, cleanliness, work schedule, and food habits.
-
-🔗 Live Demo: [Try the app](https://lovable.dev/projects/04edb6ff-57b8-45b9-87b9-0259822f33f3)
+A rule-based compatibility scoring system to help match roommates based on daily habits and preferences.
 
 ---
 
-## 🚀 Features
+## 📋 Project Description
 
-- Input preferences and get a compatibility score (0–100)
-- Optional: Upload mock profiles via CSV and get ranked matches
-- Simple and clean React + Tailwind UI
+**Habit Harmony Match** is a web-based application that evaluates how compatible two roommates are based on their personal routines and preferences such as:
+
+- Sleep time
+- Cleanliness
+- Work schedule
+- Food habits
+
+The app uses a simple rule-based model to assign a compatibility score (0–100), and also supports ranking matches from mock user profiles stored in CSV format.
+
+---
+
+## ✨ Features
+
+- 🔒 User Authentication (Supabase)
+- 📊 Rule-Based Compatibility Scoring
+- 🧹 Clean and Responsive UI with React + Tailwind + ShadCN
+- 💾 Import mock profiles and rank matches
+- 🔐 Password recovery support
+- 🌐 Hosted with [Lovable](https://lovable.dev/)
 
 ---
 
-## 🔍 How the Scoring Works
+## 🚀 Live Demo
 
-Each category (sleep time, cleanliness, work schedule, food habits) is scored independently. A perfect match gives full points for that category.
-
-- Total score is out of 100
-- Weights can be adjusted in code
+👉 [View Live App](https://habit-harmony-match.lovable.app) 
+*(Replace with your actual published Lovable URL)*
 
 ---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React, TypeScript, Tailwind CSS, shadcn-ui
+- **Auth & Backend**: Supabase
+- **Deployment**: Lovable
+- **State Management**: React Context API
+
+---
+
+## 📂 How to Run Locally
+
+Make sure you have **Node.js** and **npm** installed.
+
+```bash
+git clone https://github.com/anjaliKumari669/habit-harmony-match.git
+cd habit-harmony-match
+npm install
+npm run dev
+
 
 ## 🧪 Example Input
 
@@ -70,19 +96,7 @@ npm i
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
 
 ## What technologies are used for this project?
 
