@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Plus, Users } from "lucide-react";
+import { toast } from "sonner";
 
 interface RoomHeaderProps {
   onFindRoommate: () => void;
@@ -10,6 +11,16 @@ interface RoomHeaderProps {
 
 const RoomHeader: React.FC<RoomHeaderProps> = ({ onFindRoommate }) => {
   const navigate = useNavigate();
+  
+  const handleFindRoommate = () => {
+    onFindRoommate();
+    toast.success("Finding potential roommates");
+  };
+
+  const handlePostRoom = () => {
+    navigate("/post-room");
+    toast.success("Create a new room listing");
+  };
   
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
@@ -23,14 +34,14 @@ const RoomHeader: React.FC<RoomHeaderProps> = ({ onFindRoommate }) => {
         <Button 
           variant="outline"
           className="flex items-center gap-2" 
-          onClick={onFindRoommate}
+          onClick={handleFindRoommate}
         >
           <Users className="h-4 w-4" />
           Find Roommate
         </Button>
         <Button 
           className="flex items-center gap-2" 
-          onClick={() => navigate("/post-room")}
+          onClick={handlePostRoom}
         >
           <Plus className="h-4 w-4" />
           Post a Room

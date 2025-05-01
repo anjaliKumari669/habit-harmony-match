@@ -21,8 +21,8 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
   };
   
   const handleViewDetails = () => {
-    toast.success(`Viewing details for ${room.title}`);
     navigate(`/rooms?view=${room.id}`);
+    toast.success(`Viewing details for ${room.title}`);
   };
   
   // Use provided placeholder images or default to our own
