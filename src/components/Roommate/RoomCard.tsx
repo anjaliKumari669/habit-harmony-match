@@ -27,6 +27,8 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
   
   // Use provided placeholder images or default to our own
   const defaultImages = [
+    "/lovable-uploads/09a3331e-9b4b-41d9-955d-706f56a17b93.png",
+    "/lovable-uploads/d4b8e0f5-15dd-4aeb-8b18-569291289269.png",
     "/lovable-uploads/d40fb71f-91e2-4f5a-91d0-d345503cec59.png",
     "/lovable-uploads/e8fee0da-9972-4c21-8021-aa84bc1cbef3.png",
     "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"
@@ -99,6 +101,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
         </div>
         
         <Button 
+          variant="default" 
           size="sm" 
           onClick={handleViewDetails}
           className="flex items-center gap-1"

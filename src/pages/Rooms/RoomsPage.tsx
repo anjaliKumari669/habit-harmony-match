@@ -161,6 +161,14 @@ const RoomsPage = () => {
   // Find the room being viewed
   const viewedRoom = MOCK_ROOMS.find(room => room.id === viewRoomId);
   
+  // Ensure viewedRoom has images - add placeholder if needed
+  if (viewedRoom && (!viewedRoom.images || viewedRoom.images.length === 0)) {
+    viewedRoom.images = [
+      "/lovable-uploads/09a3331e-9b4b-41d9-955d-706f56a17b93.png",
+      "/lovable-uploads/d4b8e0f5-15dd-4aeb-8b18-569291289269.png"
+    ];
+  }
+  
   return (
     <div className="py-8">
       <div className="matchmate-container">
