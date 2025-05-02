@@ -103,12 +103,25 @@ const RoomsPage = () => {
   // Find the room being viewed
   const viewedRoom = MOCK_ROOMS.find(room => room.id === viewRoomId);
   
+  // Add default images to viewed room if needed
+  const defaultImages = [
+    "/lovable-uploads/09a3331e-9b4b-41d9-955d-706f56a17b93.png",
+    "/lovable-uploads/d4b8e0f5-15dd-4aeb-8b18-569291289269.png",
+    "/lovable-uploads/d40fb71f-91e2-4f5a-91d0-d345503cec59.png", 
+    "/lovable-uploads/e8fee0da-9972-4c21-8021-aa84bc1cbef3.png",
+    "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png",
+    "/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png" // Add the new uploaded image
+  ];
+  
   // Ensure viewedRoom has images - add placeholder if needed
   if (viewedRoom && (!viewedRoom.images || viewedRoom.images.length === 0)) {
     viewedRoom.images = [
-      "/lovable-uploads/09a3331e-9b4b-41d9-955d-706f56a17b93.png",
-      "/lovable-uploads/d4b8e0f5-15dd-4aeb-8b18-569291289269.png"
+      defaultImages[Math.floor(Math.random() * defaultImages.length)],
+      defaultImages[Math.floor(Math.random() * defaultImages.length)]
     ];
+    
+    // Make sure to include the newly uploaded image
+    viewedRoom.images.push("/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png");
   }
   
   const handleDialogOpenChange = (open: boolean) => {

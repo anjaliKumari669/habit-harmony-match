@@ -46,6 +46,32 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({ viewRoomId, viewe
   if (!viewedRoom) {
     return null;
   }
+  
+  // Ensure we have at least 2 images for the room details view
+  const defaultImages = [
+    "/lovable-uploads/09a3331e-9b4b-41d9-955d-706f56a17b93.png",
+    "/lovable-uploads/d4b8e0f5-15dd-4aeb-8b18-569291289269.png",
+    "/lovable-uploads/d40fb71f-91e2-4f5a-91d0-d345503cec59.png",
+    "/lovable-uploads/e8fee0da-9972-4c21-8021-aa84bc1cbef3.png",
+    "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png",
+    "/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png" // Add the new uploaded image
+  ];
+  
+  // Add images to the viewedRoom if needed
+  if (!viewedRoom.images || viewedRoom.images.length === 0) {
+    viewedRoom.images = [
+      defaultImages[Math.floor(Math.random() * defaultImages.length)],
+      defaultImages[Math.floor(Math.random() * defaultImages.length)]
+    ];
+  } else if (viewedRoom.images.length === 1) {
+    viewedRoom.images.push(defaultImages[Math.floor(Math.random() * defaultImages.length)]);
+  }
+  
+  // Make sure to add the newly uploaded image if it's not already there
+  const hasNewImage = viewedRoom.images.some(img => img.includes("af57e138-9d54-4d23-a21a-9bf49734340c"));
+  if (!hasNewImage) {
+    viewedRoom.images.push("/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png");
+  }
 
   return (
     <>
@@ -64,9 +90,7 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({ viewRoomId, viewe
               <div className="mt-4">
                 <div className="rounded-md overflow-hidden h-60">
                   <img 
-                    src={viewedRoom.images && viewedRoom.images.length > 0 
-                      ? viewedRoom.images[selectedImageIndex] 
-                      : "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"} 
+                    src={viewedRoom.images[selectedImageIndex]} 
                     alt={viewedRoom.title}
                     className="w-full h-full object-cover" 
                   />

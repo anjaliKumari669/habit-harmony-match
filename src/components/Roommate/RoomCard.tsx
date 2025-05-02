@@ -31,7 +31,8 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
     "/lovable-uploads/d4b8e0f5-15dd-4aeb-8b18-569291289269.png",
     "/lovable-uploads/d40fb71f-91e2-4f5a-91d0-d345503cec59.png",
     "/lovable-uploads/e8fee0da-9972-4c21-8021-aa84bc1cbef3.png",
-    "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"
+    "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png",
+    "/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png" // Add the new uploaded image
   ];
   
   // If room doesn't have images, add our placeholder images
