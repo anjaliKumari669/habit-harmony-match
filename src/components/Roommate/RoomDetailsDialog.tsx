@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -49,28 +48,23 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({ viewRoomId, viewe
   
   // Ensure we have at least 2 images for the room details view
   const defaultImages = [
+    "/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png", // Prioritize the new uploaded image
     "/lovable-uploads/09a3331e-9b4b-41d9-955d-706f56a17b93.png",
     "/lovable-uploads/d4b8e0f5-15dd-4aeb-8b18-569291289269.png",
     "/lovable-uploads/d40fb71f-91e2-4f5a-91d0-d345503cec59.png",
     "/lovable-uploads/e8fee0da-9972-4c21-8021-aa84bc1cbef3.png",
-    "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png",
-    "/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png" // Add the new uploaded image
+    "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"
   ];
   
-  // Add images to the viewedRoom if needed
+  // Add images to the viewedRoom if needed with the new uploaded image first
   if (!viewedRoom.images || viewedRoom.images.length === 0) {
     viewedRoom.images = [
-      defaultImages[Math.floor(Math.random() * defaultImages.length)],
-      defaultImages[Math.floor(Math.random() * defaultImages.length)]
+      defaultImages[0], // Always use the uploaded image first
+      defaultImages[1]
     ];
-  } else if (viewedRoom.images.length === 1) {
-    viewedRoom.images.push(defaultImages[Math.floor(Math.random() * defaultImages.length)]);
-  }
-  
-  // Make sure to add the newly uploaded image if it's not already there
-  const hasNewImage = viewedRoom.images.some(img => img.includes("af57e138-9d54-4d23-a21a-9bf49734340c"));
-  if (!hasNewImage) {
-    viewedRoom.images.push("/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png");
+  } else if (!viewedRoom.images.some(img => img.includes("af57e138-9d54-4d23-a21a-9bf49734340c"))) {
+    // Add the new image to the beginning of the array if it's not already there
+    viewedRoom.images.unshift("/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png");
   }
 
   return (

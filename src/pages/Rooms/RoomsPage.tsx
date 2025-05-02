@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -105,23 +104,23 @@ const RoomsPage = () => {
   
   // Add default images to viewed room if needed
   const defaultImages = [
+    "/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png", // Prioritize the new uploaded image
     "/lovable-uploads/09a3331e-9b4b-41d9-955d-706f56a17b93.png",
     "/lovable-uploads/d4b8e0f5-15dd-4aeb-8b18-569291289269.png",
-    "/lovable-uploads/d40fb71f-91e2-4f5a-91d0-d345503cec59.png", 
+    "/lovable-uploads/d40fb71f-91e2-4f5a-91d0-d345503cec59.png",
     "/lovable-uploads/e8fee0da-9972-4c21-8021-aa84bc1cbef3.png",
-    "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png",
-    "/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png" // Add the new uploaded image
+    "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"
   ];
   
-  // Ensure viewedRoom has images - add placeholder if needed
+  // Ensure viewedRoom has images - add the new uploaded image first
   if (viewedRoom && (!viewedRoom.images || viewedRoom.images.length === 0)) {
     viewedRoom.images = [
-      defaultImages[Math.floor(Math.random() * defaultImages.length)],
-      defaultImages[Math.floor(Math.random() * defaultImages.length)]
+      defaultImages[0], // Always use the uploaded image first
+      defaultImages[1]
     ];
-    
-    // Make sure to include the newly uploaded image
-    viewedRoom.images.push("/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png");
+  } else if (viewedRoom && !viewedRoom.images.some(img => img.includes("af57e138-9d54-4d23-a21a-9bf49734340c"))) {
+    // Add the new image to the beginning of the array if it's not already there
+    viewedRoom.images.unshift("/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png");
   }
   
   const handleDialogOpenChange = (open: boolean) => {
