@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,7 +22,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 
 const CreateProfile = () => {
   const [formData, setFormData] = useState({
@@ -33,6 +33,9 @@ const CreateProfile = () => {
     bio: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { updateUser } = useAuth();
   const navigate = useNavigate();
@@ -47,6 +50,44 @@ const CreateProfile = () => {
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error("Please select an image file");
+        return;
+      }
+      
+      // Validate file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("File size must be less than 5MB");
+        return;
+      }
+      
+      setSelectedImage(file);
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,9 +100,15 @@ const CreateProfile = () => {
       return;
     }
     
-    // In a real app, you would upload the user profile data to the server
+    // In a real app, you would upload the image and user profile data to the server
     setTimeout(() => {
-      updateUser({ profileComplete: true });
+      // Update user with profile image if selected
+      const profileData: any = { profileComplete: true };
+      if (imagePreview) {
+        profileData.profileImage = imagePreview;
+      }
+      
+      updateUser(profileData);
       toast.success("Profile created successfully!");
       navigate("/preferences-survey");
       setIsSubmitting(false);
@@ -161,17 +208,57 @@ const CreateProfile = () => {
                 
                 <div className="space-y-2">
                   <Label>Profile Picture</Label>
-                  <div className="border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center">
-                    <Upload className="h-10 w-10 text-muted-foreground mb-2" />
-                    <p className="text-sm text-muted-foreground text-center">
-                      Drag & drop or click to upload your profile picture
-                    </p>
-                    <span className="mt-2 text-xs text-muted-foreground">
-                      Supports JPG, PNG - Max 5MB
-                    </span>
-                    <Button variant="outline" className="mt-4" size="sm" type="button">
-                      Select File
-                    </Button>
+                  <div className="space-y-4">
+                    {imagePreview ? (
+                      <div className="relative w-32 h-32 mx-auto">
+                        <img 
+                          src={imagePreview} 
+                          alt="Profile preview" 
+                          className="w-full h-full object-cover rounded-full border-2 border-border"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute -top-2 -right-2 rounded-full w-8 h-8 p-0"
+                          onClick={removeImage}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div 
+                        className="border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 transition-colors"
+                        onClick={handleFileSelect}
+                      >
+                        <Upload className="h-10 w-10 text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground text-center">
+                          Drag & drop or click to upload your profile picture
+                        </p>
+                        <span className="mt-2 text-xs text-muted-foreground">
+                          Supports JPG, PNG - Max 5MB
+                        </span>
+                      </div>
+                    )}
+                    
+                    <div className="flex justify-center">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        type="button"
+                        onClick={handleFileSelect}
+                      >
+                        {imagePreview ? "Change Photo" : "Select File"}
+                      </Button>
+                    </div>
+                    
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
                   </div>
                 </div>
               </CardContent>
