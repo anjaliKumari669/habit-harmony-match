@@ -28,10 +28,13 @@ const Dashboard = () => {
     return null;
   }
   
-  // Show top 3 matches
-  const topMatches = MOCK_ROOMMATES.slice(0, 3).map(roommate => ({
+  // Show top 3 matches with proper profile images
+  const topMatches = MOCK_ROOMMATES.slice(0, 3).map((roommate, index) => ({
     ...roommate,
-    profileImage: roommate.profileImage || "/lovable-uploads/3ec98b1c-a351-4d55-a626-42acb1dbb41c.png"
+    profileImage: roommate.profileImage || 
+      (index === 0 ? "/lovable-uploads/745351af-c6b7-4e67-af07-529c8876d97b.png" : 
+       index === 1 ? "/lovable-uploads/3ec98b1c-a351-4d55-a626-42acb1dbb41c.png" :
+       "/lovable-uploads/d40fb71f-91e2-4f5a-91d0-d345503cec59.png")
   }));
   
   // Get featured rooms with fallback images
