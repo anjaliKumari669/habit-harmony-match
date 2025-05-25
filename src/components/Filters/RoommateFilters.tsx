@@ -1,11 +1,11 @@
 
 import React, { useState } from "react";
-import { Slider } from "@/components/ui/slider";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -13,11 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FilterX, Sliders } from "lucide-react";
-
-interface RoommateFiltersProps {
-  onFilterChange: (filters: RoommateFilterState) => void;
-}
 
 export interface RoommateFilterState {
   minAge: number;
@@ -31,204 +26,181 @@ export interface RoommateFilterState {
   location: string;
 }
 
-const defaultFilterState: RoommateFilterState = {
-  minAge: 18,
-  maxAge: 50,
-  gender: null,
-  cleanliness: null,
-  sleepSchedule: null,
-  social: null,
-  petFriendly: false,
-  nonSmoker: false,
-  location: ""
-};
+interface RoommateFiltersProps {
+  onFilterChange: (filters: RoommateFilterState) => void;
+}
 
 const RoommateFilters: React.FC<RoommateFiltersProps> = ({ onFilterChange }) => {
-  const [filters, setFilters] = useState<RoommateFilterState>(defaultFilterState);
-  const [expanded, setExpanded] = useState(false);
-  
-  const handleFilterChange = <K extends keyof RoommateFilterState>(
-    key: K,
-    value: RoommateFilterState[K]
-  ) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    onFilterChange(newFilters);
+  const [filters, setFilters] = useState<RoommateFilterState>({
+    minAge: 18,
+    maxAge: 50,
+    gender: null,
+    cleanliness: null,
+    sleepSchedule: null,
+    social: null,
+    petFriendly: false,
+    nonSmoker: false,
+    location: ""
+  });
+
+  const updateFilters = (newFilters: Partial<RoommateFilterState>) => {
+    const updatedFilters = { ...filters, ...newFilters };
+    setFilters(updatedFilters);
+    onFilterChange(updatedFilters);
   };
-  
-  const resetFilters = () => {
-    setFilters(defaultFilterState);
-    onFilterChange(defaultFilterState);
+
+  const clearFilters = () => {
+    const clearedFilters: RoommateFilterState = {
+      minAge: 18,
+      maxAge: 50,
+      gender: null,
+      cleanliness: null,
+      sleepSchedule: null,
+      social: null,
+      petFriendly: false,
+      nonSmoker: false,
+      location: ""
+    };
+    setFilters(clearedFilters);
+    onFilterChange(clearedFilters);
   };
-  
+
   return (
-    <div className="bg-card rounded-lg shadow-sm border p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold flex items-center">
-          <Sliders className="h-4 w-4 mr-2" /> Filters
-        </h3>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="h-8 text-xs"
-          onClick={() => setExpanded(!expanded)}
-        >
-          {expanded ? "Show Less" : "Show More"}
-        </Button>
-      </div>
-      
-      <div className="space-y-4">
-        <div>
-          <Label>Age Range</Label>
-          <div className="flex items-center justify-between mt-1 mb-2">
-            <span className="text-sm">{filters.minAge}</span>
-            <span className="text-sm">{filters.maxAge}</span>
-          </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Filters</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Age Range */}
+        <div className="space-y-2">
+          <Label>Age Range: {filters.minAge} - {filters.maxAge}</Label>
           <Slider
-            defaultValue={[filters.minAge, filters.maxAge]}
+            value={[filters.minAge, filters.maxAge]}
+            onValueChange={([min, max]) => updateFilters({ minAge: min, maxAge: max })}
+            max={65}
             min={18}
-            max={80}
             step={1}
-            onValueChange={(value) => {
-              handleFilterChange("minAge", value[0]);
-              handleFilterChange("maxAge", value[1]);
-            }}
+            className="w-full"
           />
         </div>
-        
-        <div>
-          <Label>Location</Label>
-          <Input
-            placeholder="Enter location..."
-            value={filters.location}
-            onChange={(e) => handleFilterChange("location", e.target.value)}
-            className="mt-1"
-          />
-        </div>
-        
-        <div>
+
+        {/* Gender */}
+        <div className="space-y-2">
           <Label>Gender</Label>
           <Select
-            value={filters.gender || ""}
-            onValueChange={(value) => handleFilterChange("gender", value || null)}
+            value={filters.gender || "any"}
+            onValueChange={(value) => updateFilters({ gender: value === "any" ? null : value })}
           >
-            <SelectTrigger className="mt-1">
-              <SelectValue placeholder="Any" />
+            <SelectTrigger>
+              <SelectValue placeholder="Any gender" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any</SelectItem>
+              <SelectItem value="any">Any gender</SelectItem>
               <SelectItem value="Male">Male</SelectItem>
               <SelectItem value="Female">Female</SelectItem>
               <SelectItem value="Non-binary">Non-binary</SelectItem>
-              <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        
-        {expanded && (
-          <>
-            <div>
-              <Label>Cleanliness</Label>
-              <RadioGroup
-                value={filters.cleanliness || ""}
-                onValueChange={(value) => handleFilterChange("cleanliness", value || null)}
-                className="flex gap-4 mt-2"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="neat" id="neat" />
-                  <Label htmlFor="neat" className="cursor-pointer">Neat</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="moderate" id="moderate" />
-                  <Label htmlFor="moderate" className="cursor-pointer">Moderate</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="messy" id="messy" />
-                  <Label htmlFor="messy" className="cursor-pointer">Messy</Label>
-                </div>
-              </RadioGroup>
-            </div>
-            
-            <div>
-              <Label>Sleep Schedule</Label>
-              <RadioGroup
-                value={filters.sleepSchedule || ""}
-                onValueChange={(value) => handleFilterChange("sleepSchedule", value || null)}
-                className="flex gap-4 mt-2"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="early" id="early" />
-                  <Label htmlFor="early" className="cursor-pointer">Early</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="normal" id="normal" />
-                  <Label htmlFor="normal" className="cursor-pointer">Normal</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="late" id="late" />
-                  <Label htmlFor="late" className="cursor-pointer">Late</Label>
-                </div>
-              </RadioGroup>
-            </div>
-            
-            <div>
-              <Label>Social Style</Label>
-              <RadioGroup
-                value={filters.social || ""}
-                onValueChange={(value) => handleFilterChange("social", value || null)}
-                className="flex gap-4 mt-2"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="introvert" id="introvert" />
-                  <Label htmlFor="introvert" className="cursor-pointer">Introvert</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="balanced" id="balanced" />
-                  <Label htmlFor="balanced" className="cursor-pointer">Balanced</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="extrovert" id="extrovert" />
-                  <Label htmlFor="extrovert" className="cursor-pointer">Extrovert</Label>
-                </div>
-              </RadioGroup>
-            </div>
-            
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="pet-friendly"
-                  checked={filters.petFriendly}
-                  onCheckedChange={(checked) => 
-                    handleFilterChange("petFriendly", checked === true)
-                  }
-                />
-                <Label htmlFor="pet-friendly" className="cursor-pointer">Pet Friendly</Label>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="non-smoker"
-                  checked={filters.nonSmoker}
-                  onCheckedChange={(checked) => 
-                    handleFilterChange("nonSmoker", checked === true)
-                  }
-                />
-                <Label htmlFor="non-smoker" className="cursor-pointer">Non-Smoker</Label>
-              </div>
-            </div>
-          </>
-        )}
-        
-        <Button 
-          variant="outline" 
-          className="w-full text-sm" 
-          onClick={resetFilters}
+
+        {/* Cleanliness */}
+        <div className="space-y-2">
+          <Label>Cleanliness</Label>
+          <Select
+            value={filters.cleanliness || "any"}
+            onValueChange={(value) => updateFilters({ cleanliness: value === "any" ? null : value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Any level" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="any">Any level</SelectItem>
+              <SelectItem value="neat">Very clean</SelectItem>
+              <SelectItem value="moderate">Moderately clean</SelectItem>
+              <SelectItem value="messy">Relaxed about mess</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Sleep Schedule */}
+        <div className="space-y-2">
+          <Label>Sleep Schedule</Label>
+          <Select
+            value={filters.sleepSchedule || "any"}
+            onValueChange={(value) => updateFilters({ sleepSchedule: value === "any" ? null : value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Any schedule" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="any">Any schedule</SelectItem>
+              <SelectItem value="early">Early bird</SelectItem>
+              <SelectItem value="normal">Normal hours</SelectItem>
+              <SelectItem value="late">Night owl</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Social Preference */}
+        <div className="space-y-2">
+          <Label>Social Style</Label>
+          <Select
+            value={filters.social || "any"}
+            onValueChange={(value) => updateFilters({ social: value === "any" ? null : value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Any style" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="any">Any style</SelectItem>
+              <SelectItem value="introvert">Quiet/Introvert</SelectItem>
+              <SelectItem value="balanced">Balanced</SelectItem>
+              <SelectItem value="extrovert">Social/Extrovert</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Location */}
+        <div className="space-y-2">
+          <Label>Location</Label>
+          <Input
+            placeholder="Enter preferred area..."
+            value={filters.location}
+            onChange={(e) => updateFilters({ location: e.target.value })}
+          />
+        </div>
+
+        {/* Checkboxes */}
+        <div className="space-y-3">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="petFriendly"
+              checked={filters.petFriendly}
+              onCheckedChange={(checked) => updateFilters({ petFriendly: !!checked })}
+            />
+            <Label htmlFor="petFriendly">Pet-friendly</Label>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="nonSmoker"
+              checked={filters.nonSmoker}
+              onCheckedChange={(checked) => updateFilters({ nonSmoker: !!checked })}
+            />
+            <Label htmlFor="nonSmoker">Non-smoker only</Label>
+          </div>
+        </div>
+
+        {/* Clear Filters */}
+        <Button
+          variant="outline"
+          onClick={clearFilters}
+          className="w-full"
         >
-          <FilterX className="h-4 w-4 mr-2" />
-          Reset Filters
+          Clear All Filters
         </Button>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
