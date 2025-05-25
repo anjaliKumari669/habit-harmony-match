@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import MatchesPage from "./pages/Matches/MatchesPage";
 import MessagesPage from "./pages/Messages/MessagesPage";
 import RoomsPage from "./pages/Rooms/RoomsPage";
+import PostRoomPage from "./pages/Rooms/PostRoomPage";
 import PreferencesSurveyPage from "./pages/Survey/PreferencesSurveyPage";
 import AboutPage from "./pages/About/AboutPage";
 import HowItWorksPage from "./pages/HowItWorks/HowItWorksPage";
@@ -38,6 +39,7 @@ const App = () => (
               <Route path="matches" element={<MatchesPage />} />
               <Route path="messages" element={<MessagesPage />} />
               <Route path="rooms" element={<RoomsPage />} />
+              <Route path="post-room" element={<PostRoomPage />} />
               <Route path="preferences-survey" element={<PreferencesSurveyPage />} />
               <Route path="about" element={<AboutPage />} />
               <Route path="how-it-works" element={<HowItWorksPage />} />

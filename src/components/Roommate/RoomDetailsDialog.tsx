@@ -25,15 +25,41 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({ viewRoomId, viewe
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showContactSheet, setShowContactSheet] = useState(false);
   const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
   
   const handleContactHost = () => {
     setShowContactSheet(true);
+    // Pre-fill message
+    if (viewedRoom) {
+      setMessage(`Hi ${viewedRoom.postedBy.name}, I'm interested in your room at ${viewedRoom.location}. Could we discuss the details?`);
+    }
   };
 
-  const handleSendMessage = () => {
-    toast.success("Message sent to host!");
-    setShowContactSheet(false);
-    setMessage("");
+  const handleSendMessage = async () => {
+    if (!message.trim()) {
+      toast.error("Please enter a message");
+      return;
+    }
+
+    setIsSending(true);
+    
+    try {
+      // Simulate sending message
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast.success("Message sent to host successfully!");
+      setShowContactSheet(false);
+      setMessage("");
+      
+      // Navigate to messages page after sending
+      setTimeout(() => {
+        navigate("/messages");
+      }, 1000);
+    } catch (error) {
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const handleViewProfile = (userId: string) => {
@@ -202,7 +228,7 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({ viewRoomId, viewe
               </label>
               <textarea
                 id="message"
-                className="w-full min-h-[150px] p-3 border rounded-md"
+                className="w-full min-h-[150px] p-3 border rounded-md resize-none"
                 placeholder={`Hi ${viewedRoom?.postedBy.name}, I'm interested in your room at ${viewedRoom?.location}...`}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -211,11 +237,18 @@ const RoomDetailsDialog: React.FC<RoomDetailsDialogProps> = ({ viewRoomId, viewe
           </div>
           
           <SheetFooter className="mt-4">
-            <Button variant="outline" onClick={() => setShowContactSheet(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowContactSheet(false)}
+              disabled={isSending}
+            >
               Cancel
             </Button>
-            <Button onClick={handleSendMessage}>
-              Send Message
+            <Button 
+              onClick={handleSendMessage}
+              disabled={isSending || !message.trim()}
+            >
+              {isSending ? "Sending..." : "Send Message"}
             </Button>
           </SheetFooter>
         </SheetContent>
