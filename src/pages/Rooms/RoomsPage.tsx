@@ -19,7 +19,6 @@ const RoomsPage = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Check if there's a room ID to view in the URL
     const params = new URLSearchParams(location.search);
     const viewId = params.get('view');
     if (viewId) {
@@ -27,18 +26,42 @@ const RoomsPage = () => {
     }
   }, [location]);
 
+  // Set default images if rooms have none
+useEffect(() => {
+  const updatedRooms = MOCK_ROOMS.map((room, index) => {
+    if (!room.images || room.images.length === 0) {
+      const fallbackImages = [
+        "/lovable-uploads/room1.jpeg",
+        "/lovable-uploads/room2.jpeg",
+        "/lovable-uploads/room3.jpeg",
+        "/lovable-uploads/room4.jpeg"
+      ];
+      const fallbackImage = fallbackImages[index % fallbackImages.length]; // Rotate images
+
+      return {
+        ...room,
+        images: [fallbackImage]
+      };
+    }
+    return room;
+  });
+
+  setRooms(updatedRooms);
+}, []);
+
+
   if (!user) {
     navigate("/login");
     return null;
   }
-  
+
   const handleFilterChange = <K extends keyof RoomFiltersType>(
     key: K,
     value: RoomFiltersType[K]
   ) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
-  
+
   const handleAmenityToggle = (amenity: string) => {
     if (filters.amenities.includes(amenity)) {
       handleFilterChange(
@@ -52,42 +75,36 @@ const RoomsPage = () => {
       );
     }
   };
-  
+
   const applyFilters = () => {
-    // In a real app, you'd hit an API with these filters
-    // For now, we'll just simulate filtering the mock data
     let filtered = [...MOCK_ROOMS];
-    
-    // Filter by price
+
     filtered = filtered.filter(
       (room) => room.price >= filters.minPrice && room.price <= filters.maxPrice
     );
-    
-    // Filter by location
+
     if (filters.location) {
       filtered = filtered.filter(
         (room) => room.location.toLowerCase().includes(filters.location.toLowerCase())
       );
     }
-    
-    // Filter by bedrooms
+
     if (filters.bedrooms) {
       filtered = filtered.filter(
         (room) => room.bedrooms === parseInt(filters.bedrooms)
       );
     }
-    
-    // Filter by amenities
+
     if (filters.amenities.length > 0) {
       filtered = filtered.filter((room) => 
         filters.amenities.every(amenity => room.amenities.includes(amenity))
       );
     }
-    
+
     setRooms(filtered);
     toast.success("Filters applied");
   };
-  
+
   const resetFilters = () => {
     setFilters(defaultFilters);
     setRooms(MOCK_ROOMS);
@@ -99,43 +116,35 @@ const RoomsPage = () => {
     toast.success("Navigating to potential roommates");
   };
 
-  // Find the room being viewed
-  const viewedRoom = MOCK_ROOMS.find(room => room.id === viewRoomId);
-  
-  // Add default images to viewed room if needed
+  const viewedRoom = rooms.find(room => room.id === viewRoomId);
+
   const defaultImages = [
-    "/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png", // Prioritize the new uploaded image
-    "/lovable-uploads/09a3331e-9b4b-41d9-955d-706f56a17b93.png",
-    "/lovable-uploads/d4b8e0f5-15dd-4aeb-8b18-569291289269.png",
-    "/lovable-uploads/d40fb71f-91e2-4f5a-91d0-d345503cec59.png",
-    "/lovable-uploads/e8fee0da-9972-4c21-8021-aa84bc1cbef3.png",
-    "/lovable-uploads/f994b5e0-a644-49f7-905c-db5acde73a52.png"
+    "/lovable-uploads/room1.jpeg",
+    "/lovable-uploads/room2.jpeg",
+    "/lovable-uploads/room3.jpeg",
+    "/lovable-uploads/room4.jpeg",
+    "/lovable-uploads/room1.jpeg",
+    "/lovable-uploads/room2.jpeg"
   ];
-  
-  // Ensure viewedRoom has images - add the new uploaded image first
+
   if (viewedRoom && (!viewedRoom.images || viewedRoom.images.length === 0)) {
-    viewedRoom.images = [
-      defaultImages[0], // Always use the uploaded image first
-      defaultImages[1]
-    ];
-  } else if (viewedRoom && !viewedRoom.images.some(img => img.includes("af57e138-9d54-4d23-a21a-9bf49734340c"))) {
-    // Add the new image to the beginning of the array if it's not already there
-    viewedRoom.images.unshift("/lovable-uploads/af57e138-9d54-4d23-a21a-9bf49734340c.png");
+    viewedRoom.images = [defaultImages[0], defaultImages[1]];
+  } else if (viewedRoom && !viewedRoom.images.some(img => img.includes("room2"))) {
+    viewedRoom.images.unshift("/lovable-uploads/room2.jpeg");
   }
-  
+
   const handleDialogOpenChange = (open: boolean) => {
     if (!open) {
       setViewRoomId(null);
-      // Clear the URL parameter
       navigate("/rooms");
     }
   };
-  
+
   return (
     <div className="py-8">
       <div className="matchmate-container">
         <RoomHeader onFindRoommate={handleFindRoommate} />
-        
+
         <RoomFilters 
           filters={filters}
           onFilterChange={handleFilterChange}
@@ -143,12 +152,12 @@ const RoomsPage = () => {
           onResetFilters={resetFilters}
           onAmenityToggle={handleAmenityToggle}
         />
-        
+
         <RoomList 
           rooms={rooms}
           onResetFilters={resetFilters}
         />
-        
+
         <RoomDetailsDialog 
           viewRoomId={viewRoomId}
           viewedRoom={viewedRoom}
