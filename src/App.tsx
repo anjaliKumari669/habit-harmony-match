@@ -18,6 +18,8 @@ import PostRoomPage from "./pages/Rooms/PostRoomPage";
 import PreferencesSurveyPage from "./pages/Survey/PreferencesSurveyPage";
 import AboutPage from "./pages/About/AboutPage";
 import HowItWorksPage from "./pages/HowItWorks/HowItWorksPage";
+import ProfilePage from "./pages/Profile/ProfilePage";
+import PreferencesPage from "./pages/Preferences/PreferencesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +43,8 @@ const App = () => (
               <Route path="rooms" element={<RoomsPage />} />
               <Route path="post-room" element={<PostRoomPage />} />
               <Route path="preferences-survey" element={<PreferencesSurveyPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="preferences" element={<PreferencesPage />} />
               <Route path="about" element={<AboutPage />} />
               <Route path="how-it-works" element={<HowItWorksPage />} />
               <Route path="*" element={<NotFound />} />
