@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import PreferencesSurvey from "@/components/Survey/PreferencesSurvey";
+import { toast } from "sonner";
 
 const PreferencesPage = () => {
   const { user } = useAuth();
@@ -14,6 +15,12 @@ const PreferencesPage = () => {
     navigate("/login");
     return null;
   }
+
+  const handleSubmit = (data: any) => {
+    console.log("Preferences updated:", data);
+    toast.success("Preferences updated successfully!");
+    navigate("/dashboard");
+  };
 
   return (
     <div className="min-h-screen py-12">
@@ -36,7 +43,7 @@ const PreferencesPage = () => {
             </div>
           </div>
 
-          <PreferencesSurvey />
+          <PreferencesSurvey onSubmit={handleSubmit} />
         </div>
       </div>
     </div>

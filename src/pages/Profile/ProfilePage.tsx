@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Loader2, Upload, X, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
 
 const ProfilePage = () => {
   const { user, updateUser } = useAuth();
@@ -18,11 +18,11 @@ const ProfilePage = () => {
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
-    age: user?.age || "",
-    gender: user?.gender || "",
-    location: user?.location || "",
-    occupation: user?.occupation || "",
-    bio: user?.bio || ""
+    age: "",
+    gender: "",
+    location: "",
+    occupation: "",
+    bio: ""
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
