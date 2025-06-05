@@ -88,7 +88,7 @@ const RoommateCard: React.FC<RoommateCardProps> = ({ roommate, showActions = tru
           <Button 
             variant="default" 
             size="sm"
-            onClick={() => navigate('/messages')}
+            onClick={() => navigate('/contact')}
           >
             <MessageSquare className="h-4 w-4 mr-1" /> Contact
           </Button>
